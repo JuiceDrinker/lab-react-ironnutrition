@@ -4,6 +4,7 @@ export default class FoodBox extends Component {
   state = {
     qty: 1
   };
+  
   addTodayFood = () => {
     const { name, calories } = this.props;
     const qty = this.state.qty;

@@ -6,6 +6,7 @@ import foods from "./foods.json";
 import FoodBox from "./components/FoodBox";
 import AddFoodButton from "./components/AddFoodButton";
 import Search from "./components/Search";
+import TodayFood from "./components/TodayFood";
 
 class App extends Component {
   state = {
@@ -18,11 +19,16 @@ class App extends Component {
   addTodayFood = (name, calories, qty) => {
     const copyTodayFood = [...this.state.todayFoods];
     const newTodayFood = {};
-    console.log("pizza" in copyTodayFood.keys);
-    if (name in copyTodayFood.keys) {
-      copyTodayFood[name].qty += qty;
-      copyTodayFood[name].calories = calories * copyTodayFood[name].qty;
-    } else {
+    let isExisted = false;
+
+    copyTodayFood.forEach(oneFoodObj => {
+      if (oneFoodObj.hasOwnProperty(name)) {
+        oneFoodObj[name].qty = Number(oneFoodObj[name].qty) + Number(qty);
+        oneFoodObj[name].calories = calories * oneFoodObj[name].qty;
+        isExisted = !isExisted;
+      }
+    });
+    if (!isExisted) {
       newTodayFood[name] = {
         qty: qty,
         calories: calories
@@ -54,6 +60,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+
         <Search searchSubStr={this.filterFoods} />
         <button onClick={this.toggleShowForm}>Add new Food</button>
         {this.state.showForm ? (
@@ -67,9 +74,7 @@ class App extends Component {
         ))}
 
         {this.state.todayFoods.map(foodObj => {
-          <h4>
-            {foodObj.qty} {foodObj.name} {foodObj.calories}
-          </h4>;
+          <TodayFood {...foodObj} />;
         })}
       </div>
     );
